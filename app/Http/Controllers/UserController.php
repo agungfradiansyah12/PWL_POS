@@ -75,14 +75,59 @@ class UserController extends Controller
         //    'nama' => 'Manager',
         // ]);
 
-        $user = UserModel::firstOrNew([
-                'username' => 'manager33',
-                'nama' => 'Manager Tiga Tiga',
-                'password' => Hash::make('12345'),
-                'level_id' => 2
-            ]);
+        // $user = UserModel::firstOrNew([
+        //         'username' => 'manager33',
+        //         'nama' => 'Manager Tiga Tiga',
+        //         'password' => Hash::make('12345'),
+        //         'level_id' => 2
+        //     ]);
+
+        // $user->save();
+        // return view('user', ['data' => $user]);
+
+        // Praktikum 2.5 – Attribute Changes
+        //IsDirty-IsClean
+        // $user = UserModel::create([
+        //     'username' => 'manager44',
+        //     'nama' => 'Manager44',
+        //     'password' => Hash::make('12345'),
+        //     'level_id' => 2
+        // ]);
+
+        // $user->username = 'manager45';
+
+        // $user->isDirty();
+        // $user->isDirty('username');
+        // $user->isDirty('nama');
+        // $user->isDirty(['nama', 'username']);
+
+        // $user->isClean();
+        // $user->isClean('username');
+        // $user->isClean('nama');
+        // $user->isClean(['nama', 'username']);
+
+        // $user->save();
+
+        // $user->isDirty();
+        // $user->isClean();
+        // dd($user->isDirty());
+
+        //WasChanged-WasNotChanged
+        $user = UserModel::create([
+            'username' => 'manager11',
+            'nama' => 'Manager11',
+            'password' => Hash::make('12345'),
+            'level_id' => 2
+        ]);
+
+        $user->username = 'manager12';
 
         $user->save();
-        return view('user', ['data' => $user]);
+
+        $user->wasChanged();
+        $user->wasChanged('username');
+        $user->wasChanged('username', 'level_id');
+        $user->wasChanged('nama');
+        dd($user->wasChanged(['nama', 'username']));
     }
 }
