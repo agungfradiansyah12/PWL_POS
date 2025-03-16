@@ -7,6 +7,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\SuplierController;
 use App\Models\UserModel;
 
 /*
@@ -78,4 +79,15 @@ Route::group(['prefix' => 'barang'], function () {
     Route::get('/{id}/edit', [BarangController::class, 'edit']); // Menampilkan form edit barang
     Route::put('/{id}', [BarangController::class, 'update']); // Menyimpan perubahan data barang
     Route::delete('/{id}', [BarangController::class, 'destroy']); // Menghapus barang
+});
+
+Route::group(['prefix' => 'suplier'], function () {
+    Route::get('/', [SuplierController::class, 'index']); // Menampilkan halaman daftar suplier
+    Route::post('/list', [SuplierController::class, 'list']); // Menampilkan data suplier dalam bentuk JSON untuk DataTables
+    Route::get('/create', [SuplierController::class, 'create']); // Menampilkan form tambah suplier
+    Route::post('/', [SuplierController::class, 'store']); // Menyimpan data suplier baru
+    Route::get('/{id}', [SuplierController::class, 'show']); // Menampilkan detail suplier
+    Route::get('/{id}/edit', [SuplierController::class, 'edit']); // Menampilkan form edit suplier
+    Route::put('/{id}', [SuplierController::class, 'update']); // Menyimpan perubahan data suplier
+    Route::delete('/{id}', [SuplierController::class, 'destroy']); // Menghapus suplier
 });
