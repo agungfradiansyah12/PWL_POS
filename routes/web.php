@@ -44,6 +44,8 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('/', [UserController::class, 'store']); // Menyimpan data user baru
     Route::get('/create_ajax', [UserController::class, 'create_ajax']);
     Route::post('/ajax', [UserController::class, 'store_ajax']);
+    Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']); // Menampilkan halaman form edit user menggunakan Ajax
+    Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']);  // Menyimpan perubahan data user menggunakan Ajax
     Route::get('/{id}', [UserController::class, 'show']); // Menampilkan detail user
     Route::get('/{id}/edit', [UserController::class, 'edit']); // Menampilkan form edit user
     Route::put('/{id}', [UserController::class, 'update']); // Menyimpan perubahan data user
