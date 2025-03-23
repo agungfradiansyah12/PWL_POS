@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\UserModel;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\LevelModel;
@@ -186,6 +187,50 @@ class UserController extends Controller
         }
     }
 
+    public function create_ajax(){
+        $level = LevelModel::select('level_id','level_nama')->get();
+
+        return view('user.create_ajax')->with('level', $level);
+    }
+
+
+    public function store_ajax(Request $request) {
+        // Cek apakah request berupa AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'level_id' => 'required|integer',
+                'username' => 'required|string|min:3|unique:m_user,username',
+                'nama' => 'required|string|max:100',
+                'password' => 'required|min:6'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false, // response status, false: error/gagal, true: berhasil
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(), // pesan error validasi
+                ]);
+            }
+
+            // Simpan data ke database
+            UserModel::create([
+                'level_id' => $request->level_id,
+                'username' => $request->username,
+                'nama' => $request->nama,
+                'password' => bcrypt($request->password) // Mengenkripsi password
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data user berhasil disimpan'
+            ]);
+        }
+
+        // Jika bukan request AJAX, redirect ke halaman utama
+        return redirect('/user');
+    }
 
 }
 
