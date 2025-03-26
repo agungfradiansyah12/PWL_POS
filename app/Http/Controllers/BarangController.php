@@ -250,7 +250,7 @@ class BarangController extends Controller
                     'status' => false,
                     'message' => 'Validasi Gagal',
                     'msgField' => $validator->errors(),
-                ]);
+                ], 422);
             }
 
             // Menyimpan data barang baru ke dalam database
@@ -265,17 +265,29 @@ class BarangController extends Controller
         return redirect('/barang');
     }
 
-
-    public function edit_ajax(string $id) {
+    // Menampilkan halaman form edit user menggunakan Ajax
+    public function edit_ajax(string $id)
+    {
         $barang = BarangModel::find($id);
-        if (!$barang) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data barang tidak ditemukan'
-            ]);
-        }
-        return view('barang.edit_ajax', compact('barang'));
+        $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
+
+        return view('barang.edit_ajax', [
+            'barang' => $barang,
+            'kategori' => $kategori
+        ]);
     }
+
+
+    // public function edit_ajax(string $id) {
+    //     $barang = BarangModel::find($id);
+    //     if (!$barang) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Data barang tidak ditemukan'
+    //         ]);
+    //     }
+    //     return view('barang.edit_ajax', compact('barang'));
+    // }
 
 
     public function update_ajax(Request $request, $id)

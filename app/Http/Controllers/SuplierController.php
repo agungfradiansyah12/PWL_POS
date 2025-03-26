@@ -181,14 +181,18 @@ class SuplierController extends Controller
 
     public function list(Request $request)
     {
-        $supliers = SuplierModel::select('suplier_id', 'nama_suplier', 'alamat_suplier', 'telepon_suplier');
+        $m_suplier = SuplierModel::select('suplier_id', 'nama_suplier', 'alamat_suplier', 'telepon_suplier');
 
         // Filter berdasarkan nama_suplier jika ada
-        if ($request->nama_suplier) {
-            $supliers->where('nama_suplier', 'like', '%' . $request->nama_suplier . '%');
+        if ($request->suplier_id) {
+            $m_suplier->where('suplier_id', $request->suplier_id );
         }
 
-        return DataTables::of($supliers)
+        // if ($request->kategori_id) {
+        //     $barang->where('kategori_id', $request->kategori_id);
+        // }
+
+        return DataTables::of($m_suplier)
             ->addIndexColumn() // Menambahkan nomor urut otomatis
             ->addColumn('aksi', function ($suplier) {
                 // Tombol Detail menggunakan modal AJAX
@@ -224,7 +228,7 @@ class SuplierController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $validator = Validator::make($request->all(), [
-                'nama_suplier' => 'required|string|max:100|unique:supliers,nama_suplier',
+                'nama_suplier' => 'required|string|max:100|unique:m_suplier,nama_suplier',
                 'alamat_suplier' => 'required|string|max:255',
                 'telepon_suplier' => 'required|string|max:20'
             ]);

@@ -23,13 +23,13 @@
                     <div class="form-group row">
                         <label class="col-1 control-label col-form-label">Filter:</label>
                         <div class="col-3">
-                            <select class="form-control" id="level_id" name="level_id" required>
+                            <select class="form-control" id="suplier_id" name="suplier_id" required>
                                 <option value="">- Semua -</option>
                                 @foreach ($suplier as $item)
                                     <option value="{{ $item->suplier_id }}">{{ $item->nama_suplier }}</option>
                                 @endforeach
                             </select>
-                            <small class="form-text text-muted">Level Pengguna</small>
+                            <small class="form-text text-muted">suplier Pengguna</small>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                     "dataType": "json",
                     "type": "POST",
                     "data": function (d) {
-                        d.level_id = $('#level_id').val();
+                        d.suplier_id = $('#suplier_id').val();
                     }
                 },
                 columns: [
@@ -113,7 +113,7 @@
                 ]
             });
 
-            $('#level_id').on('change', function () {
+            $('#suplier_id').on('change', function () {
                 dataSuplier.ajax.reload();
             });
         });

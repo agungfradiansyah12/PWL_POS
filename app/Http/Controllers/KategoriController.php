@@ -168,6 +168,10 @@ class KategoriController extends Controller
     {
         $kategori = KategoriModel::select('kategori_id', 'kategori_kode', 'kategori_nama');
 
+        if ($request->kategori_id) {
+            $kategori->where('kategori_id', $request->kategori_id);
+        }
+
         return DataTables::of($kategori)
             ->addIndexColumn()
             ->addColumn('aksi', function ($kategori) {
