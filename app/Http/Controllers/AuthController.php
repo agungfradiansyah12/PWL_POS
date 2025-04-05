@@ -45,53 +45,29 @@ class AuthController extends Controller
     }
 
     public function showRegisterForm()
-{
-    return view('auth.register'); // Pastikan kamu buat file view ini nanti
-}
+    {
+        return view('auth.register');
+    }
 
-public function register(Request $request)
-{
-    $request->validate([
-        'username' => 'required|unique:m_user,username',
-        'nama' => 'required|string|max:255',
-        'password' => 'required|string|min:6|confirmed',
-        'level_id' => 'required|exists:m_level,level_id', // pastikan level tersedia
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|unique:m_user,username',
+            'nama' => 'required|string|max:255',
+            'password' => 'required|string|min:6|confirmed',
+            'level_id' => 'required|exists:m_level,level_id',
+        ]);
 
-    $user = UserModel::create([
-        'username' => $request->username,
-        'nama' => $request->nama,
-        'password' => Hash::make($request->password),
-        'level_id' => $request->level_id,
-    ]);
+        $user = UserModel::create([
+            'username' => $request->username,
+            'nama' => $request->nama,
+            'password' => Hash::make($request->password),
+            'level_id' => $request->level_id,
+        ]);
 
-    Auth::login($user); // Auto login setelah registrasi
+        Auth::login($user); // Auto login setelah registrasi
 
-    return redirect('/')->with('success', 'Registrasi berhasil!');
-}
+        return redirect('/')->with('success', 'Registrasi berhasil!');
+    }
 
-    // public function showRegisterForm()
-    // {
-    //     return view('auth.register');
-    // }
-
-    // public function register(Request $request)
-    // {
-    //     // Validasi input
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:users',
-    //         'password' => 'required|min:6|confirmed',
-    //     ]);
-
-    //     // Simpan user baru
-    //     UserModel::create([
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //     ]);
-
-    //     // Redirect ke halaman login atau dashboard
-    //     return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');
-    // }
 }

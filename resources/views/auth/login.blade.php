@@ -62,10 +62,7 @@
                             <p>Belum punya akun? <a href="{{ route('register') }}">Register</a></p>
                         </div>
                     </div>
-
-
                 </form>
-
             </div>
             <!-- /.card-body -->
         </div>
