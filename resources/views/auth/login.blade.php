@@ -37,7 +37,7 @@
                         </div>
                         <small id="error-username" class="error-text text-danger"></small>
                     </div>
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2 ">
                         <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -46,13 +46,14 @@
                         </div>
                         <small id="error-password" class="error-text text-danger"></small>
                     </div>
+
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-8 mb-3">
                             <div class="icheck-primary">
                                 <input type="checkbox" id="remember"><label for="remember">Remember Me</label>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-12">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
                     </div>
