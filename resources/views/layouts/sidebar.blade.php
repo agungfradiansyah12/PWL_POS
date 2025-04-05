@@ -65,6 +65,16 @@
                     <p>Suplier</p>
                 </a>
             </li>
+
+            <!-- Tombol Logout -->
+            <li class="nav-item mt-5">
+                <form action="{{ url('/logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-block">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </li>
         </ul>
     </nav>
     <!-- /.sidebar-menu -->
