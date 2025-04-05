@@ -94,7 +94,7 @@
                     },
                     password: {
                         required: true,
-                        minlength: 6,
+                        minlength: 3,
                         maxlength: 20
                     }
                 },

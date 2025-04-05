@@ -34,11 +34,31 @@ Route::post('login', [AuthController::class, 'postLogin']);
 // Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () {//artinya  semua route didalam group ini harus login dulu
-    Route::get('/', [WelcomeController::class, 'index']);
     //masukan semua route yang perlu di aunthentikasi
-
-    // Tambahkan route logout di dalam group auth
+    Route::get('/', [WelcomeController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
+
+    // Artinya semua route di dalam grup ini hanya bisa diakses oleh user dengan role ADM (Administrator)
+    Route::middleware(['authorize:ADM'])->group(function () {
+        Route::group(['prefix' => 'level'], function () {
+            Route::get('/', [LevelController::class, 'index']); // Menampilkan halaman level
+            Route::post('/list', [LevelController::class, 'list']); // Menampilkan data level dalam bentuk JSON untuk DataTables
+            Route::get('/create', [LevelController::class, 'create']); // Menampilkan form tambah level
+            Route::post('/', [LevelController::class, 'store']); // Menyimpan data level baru
+            Route::get('/create_ajax', [LevelController::class, 'create_ajax']); // Menampilkan form tambah level menggunakan AJAX
+            Route::post('/ajax', [LevelController::class, 'store_ajax']); // Menyimpan data level baru menggunakan AJAX
+            Route::get('/{id}/edit_ajax', [LevelController::class, 'edit_ajax']); // Menampilkan form edit level menggunakan AJAX
+            Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax']); // Menyimpan perubahan data level menggunakan AJAX
+            Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax']); // Menampilkan konfirmasi hapus level dengan AJAX
+            Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']); // Menghapus data level menggunakan AJAX
+            Route::get('/{id}/show_ajax', [LevelController::class, 'show_ajax']); // Menampilkan detail level dengan AJAX
+            Route::get('/{id}', [LevelController::class, 'show']); // Menampilkan detail level
+            Route::get('/{id}/edit', [LevelController::class, 'edit']); // Menampilkan form edit level
+            Route::put('/{id}', [LevelController::class, 'update']); // Menyimpan perubahan data level
+            Route::delete('/{id}', [LevelController::class, 'destroy']); // Menghapus level
+        });
+    });
+
 });
 
 Route::group(['prefix' => 'user'], function () {
@@ -59,23 +79,7 @@ Route::group(['prefix' => 'user'], function () {
     Route::delete('/{id}', [UserController::class, 'destroy']); // Menghapus user
 });
 
-Route::group(['prefix' => 'level'], function () {
-    Route::get('/', [LevelController::class, 'index']); // Menampilkan halaman level
-    Route::post('/list', [LevelController::class, 'list']); // Menampilkan data level dalam bentuk JSON untuk DataTables
-    Route::get('/create', [LevelController::class, 'create']); // Menampilkan form tambah level
-    Route::post('/', [LevelController::class, 'store']); // Menyimpan data level baru
-    Route::get('/create_ajax', [LevelController::class, 'create_ajax']); // Menampilkan form tambah level menggunakan AJAX
-    Route::post('/ajax', [LevelController::class, 'store_ajax']); // Menyimpan data level baru menggunakan AJAX
-    Route::get('/{id}/edit_ajax', [LevelController::class, 'edit_ajax']); // Menampilkan form edit level menggunakan AJAX
-    Route::put('/{id}/update_ajax', [LevelController::class, 'update_ajax']); // Menyimpan perubahan data level menggunakan AJAX
-    Route::get('/{id}/delete_ajax', [LevelController::class, 'confirm_ajax']); // Menampilkan konfirmasi hapus level dengan AJAX
-    Route::delete('/{id}/delete_ajax', [LevelController::class, 'delete_ajax']); // Menghapus data level menggunakan AJAX
-    Route::get('/{id}/show_ajax', [LevelController::class, 'show_ajax']); // Menampilkan detail level dengan AJAX
-    Route::get('/{id}', [LevelController::class, 'show']); // Menampilkan detail level
-    Route::get('/{id}/edit', [LevelController::class, 'edit']); // Menampilkan form edit level
-    Route::put('/{id}', [LevelController::class, 'update']); // Menyimpan perubahan data level
-    Route::delete('/{id}', [LevelController::class, 'destroy']); // Menghapus level
-});
+
 
 Route::group(['prefix' => 'kategori'], function () {
     Route::get('/', [KategoriController::class, 'index']); // Menampilkan halaman kategori
