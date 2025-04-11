@@ -376,6 +376,66 @@ class LevelController extends Controller
         return redirect('/');
     }
 
+    public function export_excel(){
+        // Ambil data barang yang akan di-export
+         $level = levelModel::select(
+             'level_kode',
+             'level_nama',
+         )
+         ->orderBy('level_id')
+         ->get();
+
+         // Load library Excel
+         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+         $sheet = $spreadsheet->getActiveSheet(); // Ambil sheet yang aktif
+
+         // Set header kolom
+         $sheet->setCellValue('A1', 'No');
+         $sheet->setCellValue('B1', 'Kode Level');
+         $sheet->setCellValue('C1', 'Nama Level');
+
+         // Bold header
+         $sheet->getStyle('A1:C1')->getFont()->setBold(true);
+
+         $no = 1; // Nomor data dimulai dari 1
+         $baris = 2; // Baris data dimulai dari baris ke-2
+
+         foreach ($level as $key => $value) {
+             $sheet->setCellValue('A' . $baris, $no);
+             $sheet->setCellValue('B' . $baris, $value->level_kode);
+             $sheet->setCellValue('C' . $baris, $value->level_nama);
+
+             $baris++;
+             $no++;
+         }
+
+         foreach (range('A', 'C') as $columnID) {
+             $sheet->getColumnDimension($columnID)->setAutoSize(true); // Set auto size untuk kolom
+         }
+
+         $sheet->setTitle('Data Level'); // Set title sheet
+
+         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+         $filename = "Data level " . date('Y-m-d H:i:s') . ".xlsx";
+
+         // Header untuk download file Excel
+         header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+         header("Content-Disposition: attachment;filename=\"{$filename}\"");
+         header("Cache-Control: max-age=0");
+         header("Cache-Control: max-age=1");
+         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+         header("Cache-Control: cache, must-revalidate");
+         header("Pragma: public");
+
+         $writer->save('php://output');
+         exit;
+         // End function export_excel
+
+
+
+     }
+
 }
 
 // class LevelController extends Controller

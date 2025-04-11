@@ -395,4 +395,67 @@ public function import_ajax(Request $request)
     return redirect('/'); // Jika bukan request Ajax, redirect ke halaman utama
 }
 
+public function export_excel(){
+    // Ambil data barang yang akan di-export
+     $suplier = SuplierModel::select(
+         'nama_suplier',
+         'alamat_suplier',
+         'telepon_suplier',
+     )
+     ->orderBy('suplier_id')
+     ->get();
+
+     // Load library Excel
+     $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+     $sheet = $spreadsheet->getActiveSheet(); // Ambil sheet yang aktif
+
+     // Set header kolom
+     $sheet->setCellValue('A1', 'No');
+     $sheet->setCellValue('B1', 'Nama Suplier');
+     $sheet->setCellValue('C1', 'Alamat Suplier');
+     $sheet->setCellValue('D1', 'Telepon Suplier');
+
+     // Bold header
+     $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+     $no = 1; // Nomor data dimulai dari 1
+     $baris = 2; // Baris data dimulai dari baris ke-2
+
+     foreach ($suplier as $key => $value) {
+         $sheet->setCellValue('A' . $baris, $no);
+         $sheet->setCellValue('B' . $baris, $value->nama_suplier);
+         $sheet->setCellValue('C' . $baris, $value->alamat_suplier);
+         $sheet->setCellValue('D' . $baris, $value->telepon_suplier);
+
+         $baris++;
+         $no++;
+     }
+
+     foreach (range('A', 'D') as $columnID) {
+         $sheet->getColumnDimension($columnID)->setAutoSize(true); // Set auto size untuk kolom
+     }
+
+     $sheet->setTitle('Data Suplier'); // Set title sheet
+
+     $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+     $filename = "Data Suplier " . date('Y-m-d H:i:s') . ".xlsx";
+
+     // Header untuk download file Excel
+     header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+     header("Content-Disposition: attachment;filename=\"{$filename}\"");
+     header("Cache-Control: max-age=0");
+     header("Cache-Control: max-age=1");
+     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+     header("Cache-Control: cache, must-revalidate");
+     header("Pragma: public");
+
+     $writer->save('php://output');
+     exit;
+     // End function export_excel
+
+
+
+ }
+
 }

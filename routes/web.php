@@ -63,6 +63,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::delete('/{id}', [LevelController::class, 'destroy']); // Menghapus level
             Route::get('/import', [LevelController::class, 'import']); // Menampilkan halaman import level user
             Route::post('/import_ajax', [LevelController::class, 'import_ajax']); // Proses import blevel
+            Route::get('/export_excel', [LevelController::class, 'export_excel']);
+
         });
 
         Route::group(['prefix' => 'user'], function () {
@@ -83,7 +85,7 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::delete('/{id}', [UserController::class, 'destroy']); // Menghapus user
             Route::get('/import', [UserController::class, 'import']); // Menampilkan halaman import level user
             Route::post('/import_ajax', [UserController::class, 'import_ajax']); // Proses import blevel
-
+            Route::get('/export_excel', [UserController::class, 'export_excel']);
         });
     });
 
@@ -127,6 +129,7 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::delete('/{id}', [KategoriController::class, 'destroy']); // Menghapus kategori
             Route::get('/import', [KategoriController::class, 'import']); // Route import
             Route::post('/import_ajax', [KategoriController::class, 'import_ajax']); // Route import_ajax
+            Route::get('/export_excel', [KategoriController::class, 'export_excel']);
         });
 
         Route::group(['prefix' => 'suplier'], function () {
@@ -147,6 +150,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::delete('/{id}', [SuplierController::class, 'destroy']); // Menghapus suplier
             Route::get('/import', [SuplierController::class, 'import']); // Route import
             Route::post('/import_ajax', [SuplierController::class, 'import_ajax']); // Route import_ajax
+            Route::get('/export_excel', [SuplierController::class, 'export_excel']);
+
         });
     });
 
