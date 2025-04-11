@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\LevelModel;
 use App\Models\UseerModel;
 use Yajra\DataTables\Facades\DataTables;
@@ -368,6 +368,74 @@ class UserController extends Controller
     }
 
     return view('user.show_ajax', compact('user'));
+}
+
+public function import()
+{
+    return view('user.import'); // Pastikan path file view sesuai
+}
+
+public function import_ajax(Request $request)
+{
+    if ($request->ajax() || $request->wantsJson()) {
+        // Validasi file yang di-upload
+        $rules = [
+            'file_user' => ['required', 'mimes:xlsx', 'max:1024'] // Maksimum 1MB
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        // Jika validasi gagal
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors()
+            ]);
+        }
+
+        // Proses file yang di-upload
+        $file = $request->file('file_user');
+        $reader = IOFactory::createReader('Xlsx');
+        $reader->setReadDataOnly(true); // Hanya membaca data, tidak membaca format
+        $spreadsheet = $reader->load($file->getRealPath()); // Membaca file Excel
+        $sheet = $spreadsheet->getActiveSheet();
+        $data = $sheet->toArray(null, false, true, true); // Mengubah sheet ke array
+        $insert = [];
+
+        // Pastikan ada lebih dari satu baris (header + data)
+        if (count($data) > 1) {
+            foreach ($data as $baris => $value) {
+                if ($baris > 1) { // Mulai dari baris kedua (setelah header)
+                    // Sesuaikan kolom dengan field yang ada pada tabel User
+                    $insert[] = [
+                        'level_id' => $value['A'], // Kolom A = level_id
+                        'username' => $value['B'], // Kolom B = username
+                        'nama' => $value['C'],     // Kolom C = nama
+                        'password' => bcrypt($value['D']), // Kolom D = password, dienkripsi
+                        'created_at' => now(),
+                    ];
+                }
+            }
+
+            // Menyimpan data ke database
+            if (count($insert) > 0) {
+                UserModel::insertOrIgnore($insert); // Menggunakan insertOrIgnore untuk menghindari duplikasi
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diimport'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ]);
+        }
+    }
+
+    return redirect('/');
 }
 
 

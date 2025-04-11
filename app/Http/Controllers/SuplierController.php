@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SuplierModel;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 class SuplierController extends Controller
@@ -332,4 +333,66 @@ class SuplierController extends Controller
 
         return view('suplier.show_ajax', compact('suplier'));
     }
+
+    public function import()
+{
+    return view('suplier.import'); // Menampilkan view import untuk Suplier
+}
+
+public function import_ajax(Request $request)
+{
+    if ($request->ajax() || $request->wantsJson()) {
+        $rules = [
+            'file_suplier' => ['required', 'mimes:xlsx', 'max:1024']
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors()
+            ]);
+        }
+
+        $file = $request->file('file_suplier');
+        $reader = IOFactory::createReader('Xlsx');
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+        $data = $sheet->toArray(null, false, true, true);
+        $insert = [];
+
+        if (count($data) > 1) { // Mengecek apakah ada data di file Excel
+            foreach ($data as $baris => $value) {
+                if ($baris > 1) {
+                    $insert[] = [
+                        'nama_suplier' => $value['A'],
+                        'alamat_suplier' => $value['B'],
+                        'telepon_suplier' => $value['C'],
+                        'created_at' => now(),
+                    ];
+                }
+            }
+
+            if (count($insert) > 0) {
+                SuplierModel::insertOrIgnore($insert); // Menyisipkan data ke database tanpa duplikasi
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diimport'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ]);
+        }
+    }
+
+    return redirect('/'); // Jika bukan request Ajax, redirect ke halaman utama
+}
+
 }

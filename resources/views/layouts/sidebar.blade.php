@@ -54,13 +54,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/barang') }}" class="nav-link {{ ($activeMenu == 'penjualan') ? 'active' : '' }} ">
+                <a href="{{ url('/transaksi') }}" class="nav-link {{ ($activeMenu == 'penjualan') ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-cash-register"></i>
                     <p>Transaksi Penjualan</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/suplier') }}" class="nav-link {{ ($activeMenu == 'penjualan') ? 'active' : '' }} ">
+                <a href="{{ url('/suplier') }}" class="nav-link {{ ($activeMenu == 'suplier') ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-user-friends"></i>
                     <p>Suplier</p>
                 </a>

@@ -61,6 +61,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/{id}/edit', [LevelController::class, 'edit']); // Menampilkan form edit level
             Route::put('/{id}', [LevelController::class, 'update']); // Menyimpan perubahan data level
             Route::delete('/{id}', [LevelController::class, 'destroy']); // Menghapus level
+            Route::get('/import', [LevelController::class, 'import']); // Menampilkan halaman import level user
+            Route::post('/import_ajax', [LevelController::class, 'import_ajax']); // Proses import blevel
         });
 
         Route::group(['prefix' => 'user'], function () {
@@ -79,6 +81,9 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/{id}/edit', [UserController::class, 'edit']); // Menampilkan form edit user
             Route::put('/{id}', [UserController::class, 'update']); // Menyimpan perubahan data user
             Route::delete('/{id}', [UserController::class, 'destroy']); // Menghapus user
+            Route::get('/import', [UserController::class, 'import']); // Menampilkan halaman import level user
+            Route::post('/import_ajax', [UserController::class, 'import_ajax']); // Proses import blevel
+
         });
     });
 
@@ -99,6 +104,9 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/{id}/edit', [BarangController::class, 'edit']); // Menampilkan form edit barang
             Route::put('/{id}', [BarangController::class, 'update']); // Menyimpan perubahan data barang
             Route::delete('/{id}', [BarangController::class, 'destroy']); // Menghapus barang
+            Route::get('/import', [BarangController::class, 'import']); // Menampilkan halaman import barang
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']); // Proses import barang
+            Route::get('/export_excel', [BarangController::class, 'export_excel']);
         });
 
         Route::group(['prefix' => 'kategori'], function () {
@@ -117,6 +125,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/{id}/edit', [KategoriController::class, 'edit']); // Menampilkan form edit kategori
             Route::put('/{id}', [KategoriController::class, 'update']); // Menyimpan perubahan data kategori
             Route::delete('/{id}', [KategoriController::class, 'destroy']); // Menghapus kategori
+            Route::get('/import', [KategoriController::class, 'import']); // Route import
+            Route::post('/import_ajax', [KategoriController::class, 'import_ajax']); // Route import_ajax
         });
 
         Route::group(['prefix' => 'suplier'], function () {
@@ -135,6 +145,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/{id}/edit', [SuplierController::class, 'edit']); // Menampilkan form edit suplier
             Route::put('/{id}', [SuplierController::class, 'update']); // Menyimpan perubahan data suplier
             Route::delete('/{id}', [SuplierController::class, 'destroy']); // Menghapus suplier
+            Route::get('/import', [SuplierController::class, 'import']); // Route import
+            Route::post('/import_ajax', [SuplierController::class, 'import_ajax']); // Route import_ajax
         });
     });
 

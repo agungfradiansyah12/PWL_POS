@@ -5,12 +5,9 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/create') }}">Tambah</a>
-                <button
-                onclick="modalAction('{{ url('kategori/create_ajax') }}')"
-                class="btn btn-sm btn-success mt-1">
-                Tambah Ajax
-            </button>
+                <button onclick="modalAction('{{ url('/kategori/import') }}')" class="btn btn-info">Import Kategori</button>
+                <a class="btn btn-primary" href="{{ url('kategori/create') }}">Tambah Data</a>
+                <button onclick="modalAction('{{ url('kategori/create_ajax') }}')" class="btn btn-success">Tambah Data (Ajax)</button>
             </div>
         </div>
         <div class="card-body">
@@ -64,9 +61,9 @@
             });
         }
 
-        var dataKategori;
+        var dataMKategori;
         $(document).ready(function () {
-            var dataKategori = $('#table_kategori').DataTable({
+            var dataMKategori = $('#table_kategori').DataTable({
                 serverSide: true,
                 processing: true,
                 ajax: {
@@ -85,19 +82,19 @@
                         searchable: false
                     },
                     {
-                        data: "kategori_kode",
+                        data: "kategori_kode", // Menampilkan kolom kategori_kode
                         className: "",
                         orderable: true,
                         searchable: true
                     },
                     {
-                        data: "kategori_nama",
+                        data: "kategori_nama", // Menampilkan kolom kategori_nama
                         className: "",
                         orderable: true,
                         searchable: true
                     },
                     {
-                        data: "aksi",
+                        data: "aksi", // Aksi
                         className: "",
                         orderable: false,
                         searchable: false
@@ -107,7 +104,7 @@
 
             // Reload DataTables saat filter kategori berubah
             $('#kategori_id').on('change', function () {
-                dataKategori.ajax.reload();
+                dataMKategori.ajax.reload();
             });
         });
     </script>

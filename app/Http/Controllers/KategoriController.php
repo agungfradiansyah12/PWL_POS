@@ -6,30 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\KategoriModel;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 class KategoriController extends Controller
 {
     public function index()
     {
+        $activeMenu = 'kategori';
+
         $breadcrumb = (object) [
-            'title' => 'Daftar Kategori',
+            'title' => 'Data Kategori',
             'list' => ['Home', 'Kategori']
         ];
 
         $page = (object) [
-            'title' => 'Daftar Kategori yang tersedia',
+            'title' => 'Daftar Kategori yang Tersedia'
         ];
-
-        $activeMenu = 'kategori';
 
         $kategori = KategoriModel::all();
 
         return view('kategori.index', [
             'breadcrumb' => $breadcrumb,
             'page' => $page,
-            'kategori' => $kategori,
-            'activeMenu' => $activeMenu
+            'activeMenu' => $activeMenu,
+            'kategori' => $kategori
         ]);
     }
 
@@ -301,6 +302,77 @@ public function delete_ajax(Request $request, $id)
     return redirect('/kategori');  // Redirect jika bukan request AJAX
 }
 
+// Menampilkan form untuk impor data kategori
+public function import()
+{
+    return view('kategori.import'); // Menampilkan form import kategori
+}
+
+// Menangani impor data kategori via AJAX
+public function import_ajax(Request $request)
+{
+    // Jika permintaan adalah AJAX atau JSON
+    if ($request->ajax() || $request->wantsJson()) {
+        // Aturan validasi file yang diunggah
+        $rules = [
+            'file_kategori' => ['required', 'mimes:xlsx', 'max:1024'] // Memeriksa file berformat .xlsx
+        ];
+
+        // Validasi file yang diunggah
+        $validator = Validator::make($request->all(), $rules);
+
+        // Jika validasi gagal
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors()
+            ]);
+        }
+
+        // Ambil file yang diunggah
+        $file = $request->file('file_kategori');
+        // Membaca file Excel dengan PhpSpreadsheet
+        $reader = IOFactory::createReader('Xlsx');
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+        $data = $sheet->toArray(null, false, true, true); // Mengubah data sheet menjadi array
+        $insert = [];
+
+        // Jika ada lebih dari 1 data (mengabaikan header)
+        if (count($data) > 1) {
+            foreach ($data as $baris => $value) {
+                if ($baris > 1) {  // Abaikan baris pertama yang merupakan header
+                    // Masukkan data kategori ke array insert
+                    $insert[] = [
+                        'kategori_kode' => $value['A'], // Asumsi kolom A adalah kategori_kode
+                        'kategori_nama' => $value['B'], // Asumsi kolom B adalah kategori_nama
+                        'created_at' => now(),
+                    ];
+                }
+            }
+
+            // Jika ada data untuk dimasukkan
+            if (count($insert) > 0) {
+                // Masukkan data ke tabel kategori tanpa menimbulkan duplikasi
+                KategoriModel::insertOrIgnore($insert);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diimport'
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang diimport'
+            ]);
+        }
+    }
+
+    return redirect('/'); // Jika bukan permintaan AJAX, redirect ke halaman utama
+}
 
     // public function index(){
         // $data = [
