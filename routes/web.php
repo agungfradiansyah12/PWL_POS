@@ -9,6 +9,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Models\UserModel;
 
 /*
@@ -42,6 +43,7 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
     //masukan semua route yang perlu di aunthentikasi
     Route::get('/', [WelcomeController::class, 'index']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('/profile/update', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
 
     // Artinya semua route di dalam grup ini hanya bisa diakses oleh user dengan role ADM (Administrator)
     Route::middleware(['authorize:ADM'])->group(function () {
