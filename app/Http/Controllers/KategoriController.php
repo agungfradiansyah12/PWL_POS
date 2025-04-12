@@ -7,6 +7,8 @@ use App\Models\KategoriModel;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class KategoriController extends Controller
@@ -311,17 +313,13 @@ public function import()
 // Menangani impor data kategori via AJAX
 public function import_ajax(Request $request)
 {
-    // Jika permintaan adalah AJAX atau JSON
     if ($request->ajax() || $request->wantsJson()) {
-        // Aturan validasi file yang diunggah
         $rules = [
-            'file_kategori' => ['required', 'mimes:xlsx', 'max:1024'] // Memeriksa file berformat .xlsx
+            'file_kategori' => ['required', 'mimes:xlsx', 'max:1024']
         ];
 
-        // Validasi file yang diunggah
         $validator = Validator::make($request->all(), $rules);
 
-        // Jika validasi gagal
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
@@ -330,32 +328,26 @@ public function import_ajax(Request $request)
             ]);
         }
 
-        // Ambil file yang diunggah
         $file = $request->file('file_kategori');
-        // Membaca file Excel dengan PhpSpreadsheet
         $reader = IOFactory::createReader('Xlsx');
         $reader->setReadDataOnly(true);
         $spreadsheet = $reader->load($file->getRealPath());
         $sheet = $spreadsheet->getActiveSheet();
-        $data = $sheet->toArray(null, false, true, true); // Mengubah data sheet menjadi array
+        $data = $sheet->toArray(null, false, true, true);
         $insert = [];
 
-        // Jika ada lebih dari 1 data (mengabaikan header)
         if (count($data) > 1) {
             foreach ($data as $baris => $value) {
-                if ($baris > 1) {  // Abaikan baris pertama yang merupakan header
-                    // Masukkan data kategori ke array insert
+                if ($baris > 1) {
                     $insert[] = [
-                        'kategori_kode' => $value['A'], // Asumsi kolom A adalah kategori_kode
-                        'kategori_nama' => $value['B'], // Asumsi kolom B adalah kategori_nama
+                        'kategori_kode' => $value['A'],
+                        'kategori_nama' => $value['B'],
                         'created_at' => now(),
                     ];
                 }
             }
 
-            // Jika ada data untuk dimasukkan
             if (count($insert) > 0) {
-                // Masukkan data ke tabel kategori tanpa menimbulkan duplikasi
                 KategoriModel::insertOrIgnore($insert);
             }
 
@@ -371,7 +363,7 @@ public function import_ajax(Request $request)
         }
     }
 
-    return redirect('/'); // Jika bukan permintaan AJAX, redirect ke halaman utama
+    return redirect('/');
 }
 
 public function export_excel(){
@@ -429,11 +421,21 @@ public function export_excel(){
      $writer->save('php://output');
      exit;
      // End function export_excel
-
-
-
  }
+ public function export_pdf()
+ {
+     $kategori = KategoriModel::select( 'kategori_kode', 'kategori_nama')
+         ->orderBy('kategori_kode')
+         ->get();
 
+     // use Barryvdh\DomPDF\Facade\Pdf;
+     $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+     $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+     $pdf->setOption('isRemoteEnabled', true); // set true jika ada gambar dari url
+     $pdf->render();
+
+     return $pdf->stream('Data Kategori ' . date('Y-m-d H:i:s') . '.pdf');
+ }
     // public function index(){
         // $data = [
         //     'kategori_kode' => 'SNK',

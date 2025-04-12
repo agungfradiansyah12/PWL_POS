@@ -7,6 +7,8 @@ use App\Models\SuplierModel;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class SuplierController extends Controller
@@ -397,25 +399,22 @@ public function import_ajax(Request $request)
 
 public function export_excel(){
     // Ambil data barang yang akan di-export
-     $suplier = SuplierModel::select(
-         'nama_suplier',
-         'alamat_suplier',
-         'telepon_suplier',
-     )
+    $suplier = SuplierModel::select(
+        'nama_suplier',
+        'alamat_suplier',
+        'telepon_suplier',
+ )
      ->orderBy('suplier_id')
      ->get();
 
-     // Load library Excel
      $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
      $sheet = $spreadsheet->getActiveSheet(); // Ambil sheet yang aktif
 
-     // Set header kolom
      $sheet->setCellValue('A1', 'No');
      $sheet->setCellValue('B1', 'Nama Suplier');
      $sheet->setCellValue('C1', 'Alamat Suplier');
      $sheet->setCellValue('D1', 'Telepon Suplier');
 
-     // Bold header
      $sheet->getStyle('A1:F1')->getFont()->setBold(true);
 
      $no = 1; // Nomor data dimulai dari 1
@@ -453,9 +452,22 @@ public function export_excel(){
      $writer->save('php://output');
      exit;
      // End function export_excel
+ }
+ public function export_pdf()
+ {
+     $suplier = SuplierModel::select('nama_suplier',
+        'alamat_suplier',
+        'telepon_suplier')
+         ->orderBy('nama_suplier')
+         ->get();
 
+     // use Barryvdh\DomPDF\Facade\Pdf;
+     $pdf = Pdf::loadView('suplier.export_pdf', ['suplier' => $suplier]);
+     $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+     $pdf->setOption('isRemoteEnabled', true); // set true jika ada gambar dari url
+     $pdf->render();
 
-
+     return $pdf->stream('Data Suplier ' . date('Y-m-d H:i:s') . '.pdf');
  }
 
 }

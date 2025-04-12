@@ -64,6 +64,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/import', [LevelController::class, 'import']); // Menampilkan halaman import level user
             Route::post('/import_ajax', [LevelController::class, 'import_ajax']); // Proses import blevel
             Route::get('/export_excel', [LevelController::class, 'export_excel']);
+            Route::get('/export_pdf', [LevelController::class, 'export_pdf']);
+
 
         });
 
@@ -86,6 +88,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/import', [UserController::class, 'import']); // Menampilkan halaman import level user
             Route::post('/import_ajax', [UserController::class, 'import_ajax']); // Proses import blevel
             Route::get('/export_excel', [UserController::class, 'export_excel']);
+            Route::get('/export_pdf', [UserController::class, 'export_pdf']);
+
         });
     });
 
@@ -109,6 +113,7 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/import', [BarangController::class, 'import']); // Menampilkan halaman import barang
             Route::post('/import_ajax', [BarangController::class, 'import_ajax']); // Proses import barang
             Route::get('/export_excel', [BarangController::class, 'export_excel']);
+            Route::get('/export_pdf', [BarangController::class, 'export_pdf']);
         });
 
         Route::group(['prefix' => 'kategori'], function () {
@@ -130,6 +135,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/import', [KategoriController::class, 'import']); // Route import
             Route::post('/import_ajax', [KategoriController::class, 'import_ajax']); // Route import_ajax
             Route::get('/export_excel', [KategoriController::class, 'export_excel']);
+            Route::get('/export_pdf', [KategoriController::class, 'export_pdf']);
+
         });
 
         Route::group(['prefix' => 'suplier'], function () {
@@ -151,6 +158,8 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::get('/import', [SuplierController::class, 'import']); // Route import
             Route::post('/import_ajax', [SuplierController::class, 'import_ajax']); // Route import_ajax
             Route::get('/export_excel', [SuplierController::class, 'export_excel']);
+            Route::get('/export_pdf', [SuplierController::class, 'export_pdf']);
+
 
         });
     });
