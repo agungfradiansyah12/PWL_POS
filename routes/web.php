@@ -161,8 +161,6 @@ Route::middleware(['auth'])->group(function () {//artinya  semua route didalam g
             Route::post('/import_ajax', [SuplierController::class, 'import_ajax']); // Route import_ajax
             Route::get('/export_excel', [SuplierController::class, 'export_excel']);
             Route::get('/export_pdf', [SuplierController::class, 'export_pdf']);
-
-
         });
     });
 
