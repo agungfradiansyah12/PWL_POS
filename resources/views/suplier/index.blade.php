@@ -5,16 +5,16 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <button onclick="modalAction('{{ url('/suplier/import') }}')" class="btn btn-sm btn-info mt-1">
+            <button onclick="modalAction('{{ url('/suplier/import') }}')" class="btn btn-info">
                 Import Suplier
             </button>
-            <a href="{{ url('/suplier/export_excel') }}" class="btn btn-sm btn-warning mt-1"><i class="fa fa-file-
+            <a href="{{ url('/suplier/export_excel') }}" class="btn btn-warning "><i class="fa fa-file-
                 excel"></i> Export Suplier</a>
                 <a href="{{ url('/suplier/export_pdf') }}" class="btn btn-danger" target="blank"><i class="fa fa-file-
                     pdf"></i> Export Suplier PDF</a>
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('suplier/create') }}">Tambah</a>
+            <a class="btn btn-primary" href="{{ url('suplier/create') }}">Tambah</a>
             <!-- Tombol untuk membuka modal tambah supplier dengan Ajax -->
-            <button onclick="modalAction('{{ url('suplier/create_ajax') }}')" class="btn btn-sm btn-success mt-1">
+            <button onclick="modalAction('{{ url('suplier/create_ajax') }}')" class="btn btn-success">
                 Tambah Ajax
             </button>
         </div>

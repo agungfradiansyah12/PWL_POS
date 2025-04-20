@@ -83,6 +83,7 @@
                 type: "POST",
                 data: function (d) {
                     d.filter_level = $('.filter_level').val();
+                    console.log("filter_level:", d.filter_level);
                 }
             },
             columns: [
